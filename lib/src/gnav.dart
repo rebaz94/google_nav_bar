@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'gbutton.dart';
 
@@ -90,61 +91,63 @@ class _GNavState extends State<GNav> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: widget.backgroundColor,
-        child: Row(
-            mainAxisAlignment: widget.mainAxisAlignment,
-            children: widget.tabs
-                .map((t) => GButton(
-                      textSize: widget.textSize,
-                      style: widget.style,
-                      key: t.key,
-                      border: t.border ?? widget.tabBorder,
-                      activeBorder: t.activeBorder ?? widget.tabActiveBorder,
-                      shadow: t.shadow ?? widget.tabShadow,
-                      borderRadius: t.borderRadius ??
-                          BorderRadius.all(
-                            Radius.circular(widget.tabBorderRadius),
-                          ),
-                      debug: widget.debug,
-                      margin: t.margin ?? widget.tabMargin,
-                      active: selectedIndex == widget.tabs.indexOf(t),
-                      gap: t.gap ?? widget.gap,
-                      iconActiveColor: t.iconActiveColor ?? widget.activeColor,
-                      iconColor: t.iconColor ?? widget.color,
-                      iconSize: t.iconSize ?? widget.iconSize,
-                      textColor: t.textColor ?? widget.activeColor,
-                      rippleColor: t.rippleColor ?? widget.rippleColor,
-                      hoverColor: t.hoverColor ?? widget.hoverColor,
-                      padding: t.padding ?? widget.padding,
-                      textStyle: t.textStyle ?? widget.textStyle,
-                      text: t.text,
-                      icon: t.icon,
-                      haptic: widget.haptic,
-                      leading: t.leading,
-                      curve: widget.curve,
-                      backgroundGradient:
-                          t.backgroundGradient ?? widget.tabBackgroundGradient,
-                      backgroundColor:
-                          t.backgroundColor ?? widget.tabBackgroundColor,
-                      duration: widget.duration,
-                      onPressed: () {
-                        if (!clickable) return;
-                        setState(() {
-                          selectedIndex = widget.tabs.indexOf(t);
-                          clickable = false;
-                        });
+      color: widget.backgroundColor,
+      child: Row(
+        mainAxisAlignment: widget.mainAxisAlignment,
+        children: [
+          for (final t in widget.tabs)
+            GButton(
+              textSize: widget.textSize,
+              style: widget.style,
+              key: t.key,
+              border: t.border ?? widget.tabBorder,
+              activeBorder: t.activeBorder ?? widget.tabActiveBorder,
+              shadow: t.shadow ?? widget.tabShadow,
+              borderRadius: t.borderRadius ??
+                  BorderRadius.all(
+                    Radius.circular(widget.tabBorderRadius),
+                  ),
+              debug: widget.debug,
+              margin: t.margin ?? widget.tabMargin,
+              active: selectedIndex == widget.tabs.indexOf(t),
+              gap: t.gap ?? widget.gap,
+              iconActiveColor: t.iconActiveColor ?? widget.activeColor,
+              iconColor: t.iconColor ?? widget.color,
+              iconSize: t.iconSize ?? widget.iconSize,
+              textColor: t.textColor ?? widget.activeColor,
+              rippleColor: t.rippleColor ?? widget.rippleColor,
+              hoverColor: t.hoverColor ?? widget.hoverColor,
+              padding: t.padding ?? widget.padding,
+              textStyle: t.textStyle ?? widget.textStyle,
+              semanticLabel: t.semanticLabel,
+              text: t.text,
+              icon: t.icon,
+              haptic: widget.haptic,
+              leading: t.leading,
+              curve: widget.curve,
+              backgroundGradient: t.backgroundGradient ?? widget.tabBackgroundGradient,
+              backgroundColor: t.backgroundColor ?? widget.tabBackgroundColor,
+              duration: widget.duration,
+              onPressed: () {
+                if (!clickable) return;
+                setState(() {
+                  selectedIndex = widget.tabs.indexOf(t);
+                  clickable = false;
+                });
 
-                        t.onPressed?.call();
+                t.onPressed?.call();
 
-                        widget.onTabChange?.call(selectedIndex);
+                widget.onTabChange?.call(selectedIndex);
 
-                        Future.delayed(widget.duration, () {
-                          setState(() {
-                            clickable = true;
-                          });
-                        });
-                      },
-                    ))
-                .toList()));
+                Future.delayed(widget.duration, () {
+                  setState(() {
+                    clickable = true;
+                  });
+                });
+              },
+            ),
+        ],
+      ),
+    );
   }
 }

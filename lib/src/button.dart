@@ -30,6 +30,7 @@ class Button extends StatefulWidget {
     this.shadow,
     this.style = GnavStyle.google,
     this.textSize,
+    this.semanticLabel,
   }) : super(key: key);
 
   final IconData? icon;
@@ -56,6 +57,7 @@ class Button extends StatefulWidget {
   final List<BoxShadow>? shadow;
   final GnavStyle? style;
   final double? textSize;
+  final String? semanticLabel;
 
   @override
   _ButtonState createState() => _ButtonState();
@@ -106,106 +108,114 @@ class _ButtonState extends State<Button> with TickerProviderStateMixin {
 
     return Material(
       type: MaterialType.transparency,
-      child: InkWell(
-        highlightColor: widget.hoverColor,
-        splashColor: widget.rippleColor,
-        borderRadius: widget.borderRadius,
-        onTap: widget.onPressed,
-        child: Container(
-          padding: widget.margin,
-          child: AnimatedContainer(
-            curve: Curves.easeOut,
-            padding: widget.padding,
-            duration: widget.duration!,
-            decoration: BoxDecoration(
-              boxShadow: widget.shadow,
-              border: widget.active!
-                  ? (widget.activeBorder ?? widget.border)
-                  : widget.border,
-              gradient: widget.gradient,
-              color: _expanded
-                  ? widget.color!.withOpacity(0)
-                  : widget.debug!
-                      ? Colors.red
-                      : widget.gradient != null
-                          ? Colors.white
-                          : widget.color,
-              borderRadius: widget.borderRadius,
-            ),
-            child: FittedBox(
-              fit: BoxFit.fitHeight,
-              child: Builder(
-                builder: (_) {
-                  if (widget.style == GnavStyle.google) {
-                    return Stack(
-                      children: [
-                        if (widget.text!.data != '')
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Opacity(
-                                  opacity: 0,
-                                  child: icon,
-                                ),
-                                Container(
-                                  child: Container(
-                                    child: Align(
-                                        alignment: Alignment.centerRight,
-                                        widthFactor: curveValue,
-                                        child: Container(
-                                          child: Opacity(
-                                              opacity: _expanded
-                                                  ? pow(expandController.value,
-                                                      13) as double
-                                                  : expandController
-                                                      .drive(CurveTween(
-                                                          curve: Curves.easeIn))
-                                                      .value,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: widget.gap! +
-                                                        8 -
-                                                        (8 *
+      child: Semantics(
+        label: widget.semanticLabel,
+        enabled: true,
+        child: InkWell(
+          highlightColor: widget.hoverColor,
+          splashColor: widget.rippleColor,
+          borderRadius: widget.borderRadius,
+          onTap: widget.onPressed,
+          excludeFromSemantics: true,
+          child: Container(
+            padding: widget.margin,
+            child: AnimatedContainer(
+              curve: Curves.easeOut,
+              padding: widget.padding,
+              duration: widget.duration!,
+              decoration: BoxDecoration(
+                boxShadow: widget.shadow,
+                border: widget.active!
+                    ? (widget.activeBorder ?? widget.border)
+                    : widget.border,
+                gradient: widget.gradient,
+                color: _expanded
+                    ? widget.color!.withOpacity(0)
+                    : widget.debug!
+                        ? Colors.red
+                        : widget.gradient != null
+                            ? Colors.white
+                            : widget.color,
+                borderRadius: widget.borderRadius,
+              ),
+              child: FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Builder(
+                  builder: (_) {
+                    if (widget.style == GnavStyle.google) {
+                      return Stack(
+                        children: [
+                          if (widget.text!.data != '')
+                            ExcludeSemantics(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Opacity(
+                                      opacity: 0,
+                                      child: icon,
+                                    ),
+                                    Container(
+                                      child: Container(
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            widthFactor: curveValue,
+                                            child: Container(
+                                              child: Opacity(
+                                                  opacity: _expanded
+                                                      ? pow(expandController.value,
+                                                          13) as double
+                                                      : expandController
+                                                          .drive(CurveTween(
+                                                              curve: Curves.easeIn))
+                                                          .value,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: widget.gap! +
+                                                            8 -
+                                                            (8 *
+                                                                expandController
+                                                                    .drive(CurveTween(
+                                                                        curve: Curves
+                                                                            .easeOutSine))
+                                                                    .value),
+                                                        right: 8 *
                                                             expandController
                                                                 .drive(CurveTween(
                                                                     curve: Curves
                                                                         .easeOutSine))
                                                                 .value),
-                                                    right: 8 *
-                                                        expandController
-                                                            .drive(CurveTween(
-                                                                curve: Curves
-                                                                    .easeOutSine))
-                                                            .value),
-                                                child: widget.text,
-                                              )),
-                                        )),
-                                  ),
-                                ),
-                              ]),
-                        Align(alignment: Alignment.centerLeft, child: icon),
-                      ],
-                    );
-                  } else if (widget.style == GnavStyle.oldSchool) {
-                    return Column(
-                      children: [
-                        icon,
-                        Container(
-                          padding: EdgeInsets.only(top: widget.gap!),
-                          child: Text(
-                            widget.text!.data!,
-                            style: TextStyle(
-                              color: _colorTweenAnimation.value,
-                              fontSize: widget.textSize ?? 16,
+                                                    child: widget.text,
+                                                  )),
+                                            )),
+                                      ),
+                                    ),
+                                  ]),
+                            ),
+                          Align(alignment: Alignment.centerLeft, child: icon),
+                        ],
+                      );
+                    } else if (widget.style == GnavStyle.oldSchool) {
+                      return Column(
+                        children: [
+                          icon,
+                          Container(
+                            padding: EdgeInsets.only(top: widget.gap!),
+                            child: Text(
+                              widget.text!.data!,
+                              semanticsLabel: '',
+                              style: TextStyle(
+                                color: _colorTweenAnimation.value,
+                                fontSize: widget.textSize ?? 16,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
               ),
             ),
           ),

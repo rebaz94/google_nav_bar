@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as b;
 
 void main() => runApp(TabPage());
 
@@ -99,10 +99,10 @@ class _TabPageState extends State<TabPage> {
                     icon: LineIcons.heart,
                     leading: selectedIndex == 1 || badge == 0
                         ? null
-                        : Badge(
+                        : b.Badge(
                             badgeColor: Colors.red.shade100,
                             elevation: 0,
-                            position: BadgePosition.topEnd(top: -12, end: -12),
+                            position: b.BadgePosition.topEnd(top: -12, end: -12),
                             badgeContent: Text(
                               badge.toString(),
                               style: TextStyle(color: Colors.red.shade900),
